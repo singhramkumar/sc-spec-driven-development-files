@@ -1,0 +1,33 @@
+{
+  "name": "agentclinic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": ["**/*.test.ts"]
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0",
+    "express": "^5.2.1",
+    "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.9.1",
+    "@types/supertest": "^7.2.0",
+    "@types/uuid": "^10.0.0",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11",
+    "typescript": "^5.5.3"
+  },
+  "private": true
+}
