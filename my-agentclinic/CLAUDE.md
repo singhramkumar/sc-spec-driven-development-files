@@ -25,12 +25,24 @@ No test runner is configured yet.
 
 ## Architecture
 
-This project is in early scaffold phase. The source lives entirely in [src/](src/) and compiles to `dist/` via `tsc`.
+The backend source lives in [src/](src/) and compiles to `dist/` via `tsc`. Static frontend files (HTML, CSS, JS) are served from the [public/](public/) directory.
 
 **TypeScript config** ([tsconfig.json](tsconfig.json)): target ES2016, CommonJS modules, strict mode, `esModuleInterop` enabled, output to `dist/`.
 
-**Planned specs directory:** `specs/mission.md`, `specs/tech-stack.md`, `specs/roadmap.md` — these define the "constitution" for the project and should be created before implementing features.
+**Backend structure:**
+- `src/agents/` - Agent domain (types, repository, service, router)
+- `src/index.ts` - Express app initialization and static file serving
 
-**Planned tech stack:** server-side TypeScript with a chosen framework, SQLite for the database.
+**Frontend structure:**
+- `public/index.html` - Main HTML page with responsive, mobile-first design
+- `public/styles.css` - Responsive CSS with CSS variables, media queries (mobile 320px+, tablet 768px+, desktop 1024px+)
+- `public/script.js` - Client-side interactivity for agent dashboard
+
+**Specs directory:** `specs/mission.md`, `specs/tech-stack.md`, `specs/roadmap.md` — these define the "constitution" for the project.
+
+**Tech stack:** 
+- Backend: Node.js, TypeScript, Express.js, SQLite
+- Frontend: HTML5, CSS3 (responsive), vanilla JavaScript
+- Design approach: Mobile-first responsive design with flexible layouts, CSS Grid/Flexbox, and media queries
 
 **[prompts.md](prompts.md)** contains the lesson prompts that drive feature development — consult it for the intended evolution of the project.

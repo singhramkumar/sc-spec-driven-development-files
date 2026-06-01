@@ -112,8 +112,21 @@ src/
 
 ## Out of Scope (Phase 1)
 
-- HTML/browser UI
+- HTML/browser UI (deferred to Phase 2)
 - Authentication
 - Pagination / filtering
 - DELETE endpoint (Phase 2+)
 - Ailments, therapies, appointments
+
+---
+
+## UI Implementation Notes
+
+When the web UI is implemented in Phase 2+, it shall follow these responsive design principles:
+- **Mobile-First Approach**: Start with mobile layout, progressively enhance for larger screens
+- **Flexible Layouts**: Use CSS Grid and Flexbox for flexible, responsive layouts
+- **Media Queries**: Implement breakpoints at 320px (mobile), 768px (tablet), 1024px (desktop)
+- **Responsive Typography**: Scale font sizes and spacing proportionally across devices
+- **Touch Optimization**: Ensure buttons and interactive elements are touch-friendly (minimum 44px height)
+- **Image Optimization**: Use responsive images with srcset for different screen sizes
+- **Performance**: Minimize CSS/JS bundle size for faster mobile load times

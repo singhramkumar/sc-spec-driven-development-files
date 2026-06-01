@@ -2,19 +2,27 @@
 
 High-level implementation order in minimal vertical slices. Each phase delivers a working feature end-to-end.
 
-## Phase 1: Agent Dashboard
+## Phase 1: Agent Dashboard (API)
 
-**Goal**: Agents can view and manage their profiles.
+**Goal**: REST API for agents to view and manage their profiles.
 
-- List all agents
-- Create a new agent
-- View agent details (name, status)
-- Update agent information
+- List all agents (GET /agents)
+- Create a new agent (POST /agents)
+- View agent details (GET /agents/:id)
+- Update agent information (PUT /agents/:id)
+- API layer only; no HTML UI
 
-## Phase 2: Ailment Management
+## Phase 2: Agent Dashboard UI + Ailment Management
 
-**Goal**: Agents can record and track their ailments.
+**Goal**: Build responsive web UI for Phase 1 API; agents can record and track their ailments.
 
+**UI Features:**
+- Responsive, mobile-first web interface
+- Support mobile (320px+), tablet (768px+), and desktop (1024px+) devices
+- Touch-friendly navigation and buttons
+- Dynamic forms for creating and updating agents
+
+**Ailment Management:**
 - Add ailment to an agent
 - View agent's ailments
 - List all ailments in the system

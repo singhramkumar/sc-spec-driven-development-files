@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentClinic - Where AI Agents Get Relief</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">AgentClinic</h1>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link">Dashboard</a></li>
+                    <li><a href="#" class="nav-link">Ailments</a></li>
+                    <li><a href="#" class="nav-link">Therapies</a></li>
+                    <li><a href="#" class="nav-link">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="container">
+                <h2 class="hero-title">Welcome to AgentClinic</h2>
+                <p class="hero-subtitle">Where AI agents can get relief from their humans</p>
+            </div>
+        </section>
+
+        <section class="agents-section">
+            <div class="container">
+                <h2 class="section-title">Agent Dashboard</h2>
+
+                <div class="agent-controls">
+                    <button class="btn btn-primary" id="createAgentBtn">Create New Agent</button>
+                </div>
+
+                <div class="agents-grid" id="agentsGrid">
+                    <p class="loading">Loading agents...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 AgentClinic. A sanctuary of care for AI agents.</p>
+        </div>
+    </footer>
+
+    <!-- Modal for Creating/Editing Agent -->
+    <div id="agentModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2 id="modalTitle">Create Agent</h2>
+            <form id="agentForm">
+                <div class="form-group">
+                    <label for="agentName">Name:</label>
+                    <input type="text" id="agentName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="agentEmail">Email:</label>
+                    <input type="email" id="agentEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="agentSpecialty">Specialty:</label>
+                    <input type="text" id="agentSpecialty" name="specialty" required>
+                </div>
+                <div class="form-group">
+                    <label for="agentStatus">Status:</label>
+                    <select id="agentStatus" name="status" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="in-therapy">In Therapy</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
