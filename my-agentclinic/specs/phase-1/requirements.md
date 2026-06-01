@@ -35,6 +35,9 @@
 | NFR-4 | Database        | The application shall use SQLite for persistence                                     |
 | NFR-5 | Reliability     | All business logic shall be covered by unit tests                                    |
 | NFR-6 | Testability     | Repositories shall be abstracted behind interfaces to enable mock injection in tests |
+| NFR-7 | Responsive Design | When the web UI is implemented, it shall follow a mobile-first responsive design approach |
+| NFR-8 | Responsive Design | The web UI shall display correctly on mobile (320px+), tablet (768px+), and desktop (1024px+) devices |
+| NFR-9 | Accessibility    | The web UI shall support keyboard navigation and touch-friendly interaction |
 
 ---
 

@@ -38,6 +38,13 @@ describe('GET /agents', () => {
     expect(res.status).toBe(200);
     expect(res.body).toEqual([mockAgent]);
   });
+
+  it('returns 200 with empty array when no agents exist', async () => {
+    const repo = makeMockRepo({ findAll: jest.fn().mockReturnValue([]) });
+    const res = await request(makeApp(repo)).get('/agents');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+  });
 });
 
 describe('GET /agents/:id', () => {
@@ -70,6 +77,27 @@ describe('POST /agents', () => {
     const res = await request(makeApp(makeMockRepo())).post('/agents').send(rest);
     expect(res.status).toBe(400);
     expect(res.body.error).toMatch(/name/);
+  });
+
+  it('returns 400 when email is missing', async () => {
+    const { email: _e, ...rest } = validBody;
+    const res = await request(makeApp(makeMockRepo())).post('/agents').send(rest);
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/email/);
+  });
+
+  it('returns 400 when specialty is missing', async () => {
+    const { specialty: _s, ...rest } = validBody;
+    const res = await request(makeApp(makeMockRepo())).post('/agents').send(rest);
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/specialty/);
+  });
+
+  it('returns 400 when status is missing', async () => {
+    const { status: _st, ...rest } = validBody;
+    const res = await request(makeApp(makeMockRepo())).post('/agents').send(rest);
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/status/);
   });
 
   it('returns 400 on invalid email format', async () => {
