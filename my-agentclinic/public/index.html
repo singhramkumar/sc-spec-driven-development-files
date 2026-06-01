@@ -84,6 +84,58 @@
         </div>
     </div>
 
+    <!-- Modal for Agent Detail View with Ailments -->
+    <div id="agentDetailModal" class="modal" style="display:none;">
+        <div class="modal-content agent-detail-content">
+            <span class="close" id="closeDetailModal">&times;</span>
+            <h2 id="detailAgentName"></h2>
+
+            <div class="agent-info-section">
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span id="detailAgentEmail"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Specialty:</span>
+                    <span id="detailAgentSpecialty"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span id="detailAgentStatus" class="agent-status"></span>
+                </div>
+            </div>
+
+            <h3>Ailments</h3>
+            <div id="ailmentsList" class="ailment-list"></div>
+
+            <div class="ailment-form-section">
+                <h4>Add New Ailment</h4>
+                <form id="ailmentForm">
+                    <div class="form-group">
+                        <label for="ailmentName">Ailment Name:</label>
+                        <input type="text" id="ailmentName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ailmentDescription">Description:</label>
+                        <textarea id="ailmentDescription" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="ailmentSeverity">Severity:</label>
+                        <select id="ailmentSeverity" name="severity" required>
+                            <option value="mild">Mild</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="severe">Severe</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Ailment</button>
+                        <button type="button" class="btn btn-secondary" id="cancelAilmentBtn">Clear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
-import { AgentService, ValidationError, NotFoundError, ConflictError } from '../../agents/agent.service';
+import { AgentService } from '../../agents/agent.service';
 import { IAgentRepository } from '../../agents/agent.repository';
 import { Agent, AgentStatus } from '../../agents/agent.types';
+import { ValidationError, NotFoundError, ConflictError } from '../../errors';
 
 function makeMockRepo(overrides: Partial<IAgentRepository> = {}): IAgentRepository {
   return {

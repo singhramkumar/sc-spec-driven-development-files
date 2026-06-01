@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Agent, AgentStatus } from './agent.types';
 import { IAgentRepository } from './agent.repository';
+import { ValidationError, NotFoundError, ConflictError } from '../errors';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const VALID_STATUSES = Object.values(AgentStatus) as string[];
@@ -62,26 +63,5 @@ export class AgentService {
     if (data.status !== undefined) fields.status = data.status as AgentStatus;
 
     return this.repo.update(id, fields) as Agent;
-  }
-}
-
-export class ValidationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ValidationError';
-  }
-}
-
-export class NotFoundError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NotFoundError';
-  }
-}
-
-export class ConflictError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ConflictError';
   }
 }

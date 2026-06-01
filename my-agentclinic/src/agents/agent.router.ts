@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
-import { AgentService, ValidationError, NotFoundError, ConflictError } from './agent.service';
+import { AgentService } from './agent.service';
 import { IAgentRepository } from './agent.repository';
+import { ValidationError, NotFoundError, ConflictError } from '../errors';
 
 export function createAgentRouter(repo: IAgentRepository): Router {
   const router = Router();
