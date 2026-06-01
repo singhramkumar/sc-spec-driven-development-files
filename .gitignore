@@ -3,3 +3,6 @@
 DeepLearning SDD Course - Lesson Scripts*.md
 scripts.md
 agentclinic copy/
+dist/
+node_modules/
+.env
