@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { createAgentRouter } from './agents/agent.router';
 import { SqliteAgentRepository } from './agents/agent.repository';
@@ -11,74 +11,70 @@ app.use(express.json());
 
 const agentRepo = new SqliteAgentRepository();
 const ailmentRepo = new SqliteAilmentRepository();
-
-// Direct ailment route handlers (must come BEFORE the agents router to take priority)
 const ailmentService = new AilmentService(ailmentRepo, agentRepo);
 
-// Test route to verify routing is working
-app.get('/test-ailments', (req, res) => {
-  res.json({ test: 'working' });
-});
-
-// GET /ailments - list all ailments
-app.get('/ailments', (req, res) => {
-  try {
-    res.json(ailmentService.listAllAilments());
-  } catch (err) {
-    handleError(err, res);
+// Custom middleware for handling ailment routes
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`[AILMENT MIDDLEWARE] ${req.method} ${req.path}`);
+  // Handle /ailments endpoints
+  if (req.path === '/ailments') {
+    console.log('[AILMENT] Matched /ailments');
+    if (req.method === 'GET') {
+      try {
+        res.json(ailmentService.listAllAilments());
+      } catch (err) {
+        handleError(err, res);
+      }
+      return;
+    }
   }
-});
 
-// GET /agents/:agentId/ailments - list agent's ailments
-app.get('/agents/:agentId/ailments', (req, res) => {
-  try {
-    const { agentId } = req.params;
-    res.json(ailmentService.listAilmentsForAgent(agentId));
-  } catch (err) {
-    handleError(err, res);
+  // Handle /agents/:agentId/ailments endpoints
+  const ailmentMatch = req.path.match(/^\/agents\/([^/]+)\/ailments(?:\/([^/]+))?$/);
+  if (ailmentMatch) {
+    const agentId = ailmentMatch[1];
+    const ailmentId = ailmentMatch[2];
+
+    try {
+      if (req.path.match(/^\/agents\/[^/]+\/ailments$/) && !ailmentId) {
+        // /agents/:agentId/ailments
+        if (req.method === 'GET') {
+          res.json(ailmentService.listAilmentsForAgent(agentId));
+          return;
+        } else if (req.method === 'POST') {
+          const ailment = ailmentService.createAilment(agentId, req.body as Record<string, string>);
+          res.status(201).json(ailment);
+          return;
+        }
+      } else if (ailmentId) {
+        // /agents/:agentId/ailments/:ailmentId
+        if (req.method === 'PUT') {
+          const updated = ailmentService.updateAilment(agentId, ailmentId, req.body as Record<string, string>);
+          res.json(updated);
+          return;
+        } else if (req.method === 'DELETE') {
+          ailmentService.deleteAilment(agentId, ailmentId);
+          res.status(204).send();
+          return;
+        }
+      }
+    } catch (err) {
+      handleError(err, res);
+      return;
+    }
   }
+
+  // Pass to next middleware if not an ailment route
+  next();
 });
 
-// POST /agents/:agentId/ailments - create ailment
-app.post('/agents/:agentId/ailments', (req, res) => {
-  try {
-    const { agentId } = req.params;
-    const ailment = ailmentService.createAilment(agentId, req.body as Record<string, string>);
-    res.status(201).json(ailment);
-  } catch (err) {
-    handleError(err, res);
-  }
-});
-
-// PUT /agents/:agentId/ailments/:ailmentId - update ailment
-app.put('/agents/:agentId/ailments/:ailmentId', (req, res) => {
-  try {
-    const { agentId, ailmentId } = req.params;
-    const updated = ailmentService.updateAilment(agentId, ailmentId, req.body as Record<string, string>);
-    res.json(updated);
-  } catch (err) {
-    handleError(err, res);
-  }
-});
-
-// DELETE /agents/:agentId/ailments/:ailmentId - delete ailment
-app.delete('/agents/:agentId/ailments/:ailmentId', (req, res) => {
-  try {
-    const { agentId, ailmentId } = req.params;
-    ailmentService.deleteAilment(agentId, ailmentId);
-    res.status(204).send();
-  } catch (err) {
-    handleError(err, res);
-  }
-});
-
-// Mount agents router (must come AFTER ailment routes so specific routes match first)
+// Mount the agent router
 app.use('/agents', createAgentRouter(agentRepo));
 
 // Static files and fallback
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
