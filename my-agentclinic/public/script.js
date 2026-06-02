@@ -1,4 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ============================================================
+    // SECTION NAVIGATION
+    // ============================================================
+
+    const agentsSection = document.getElementById('agentsSection');
+    const therapiesSection = document.getElementById('therapiesSection');
+
+    document.querySelectorAll('[data-nav]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = link.dataset.nav;
+
+            document.querySelectorAll('[data-nav]').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            agentsSection.style.display = target === 'agents' ? 'block' : 'none';
+            therapiesSection.style.display = target === 'therapies' ? 'block' : 'none';
+
+            if (target === 'therapies' && !therapiesLoaded) {
+                fetchTherapies();
+            }
+        });
+    });
+
+    // ============================================================
+    // AGENTS
+    // ============================================================
+
     const agentsGrid = document.getElementById('agentsGrid');
     const createAgentBtn = document.getElementById('createAgentBtn');
     const agentModal = document.getElementById('agentModal');
@@ -17,9 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     agentForm.addEventListener('submit', handleFormSubmit);
 
     window.addEventListener('click', (event) => {
-        if (event.target === agentModal) {
-            closeAgentModal();
-        }
+        if (event.target === agentModal) closeAgentModal();
     });
 
     async function fetchAgents() {
@@ -169,10 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         statusSpan.textContent = agent.status;
         statusSpan.className = `agent-status status-${agent.status}`;
 
-        // Fetch and display ailments
         fetchAilmentsForAgent(agent.id);
-
-        // Store current agent ID for ailment operations
         window.currentAgentId = agent.id;
 
         document.getElementById('agentDetailModal').style.display = 'flex';
@@ -246,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Ailment form handling
     const ailmentForm = document.getElementById('ailmentForm');
     const cancelAilmentBtn = document.getElementById('cancelAilmentBtn');
 
@@ -278,11 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    cancelAilmentBtn.addEventListener('click', () => {
-        ailmentForm.reset();
-    });
+    cancelAilmentBtn.addEventListener('click', () => ailmentForm.reset());
 
-    // Detail modal close handlers
     const closeDetailModal = document.getElementById('closeDetailModal');
     closeDetailModal.addEventListener('click', () => {
         document.getElementById('agentDetailModal').style.display = 'none';
@@ -290,10 +310,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('click', (event) => {
         const detailModal = document.getElementById('agentDetailModal');
-        if (event.target === detailModal) {
-            detailModal.style.display = 'none';
-        }
+        if (event.target === detailModal) detailModal.style.display = 'none';
     });
+
+    // ============================================================
+    // THERAPIES
+    // ============================================================
+
+    let allTherapies = [];
+    let therapiesLoaded = false;
+    let filterDebounceTimer = null;
+
+    async function fetchTherapies() {
+        const grid = document.getElementById('therapiesGrid');
+        try {
+            const response = await fetch('/therapies');
+            if (!response.ok) throw new Error('Failed to fetch therapies');
+            allTherapies = await response.json();
+            therapiesLoaded = true;
+            renderTherapies(allTherapies);
+        } catch (error) {
+            grid.innerHTML = `<p class="error">Error loading therapies: ${error.message}</p>`;
+        }
+    }
+
+    function applyTherapyFilters() {
+        const search = document.getElementById('therapySearch').value.trim().toLowerCase();
+        const therapist = document.getElementById('therapistFilter').value.trim().toLowerCase();
+        const category = document.getElementById('categoryFilter').value;
+
+        const filtered = allTherapies.filter(t => {
+            if (search && !t.name.toLowerCase().includes(search)) return false;
+            if (therapist && !t.therapist.toLowerCase().includes(therapist)) return false;
+            if (category && t.category !== category) return false;
+            return true;
+        });
+
+        renderTherapies(filtered);
+    }
+
+    function renderTherapies(therapies) {
+        const grid = document.getElementById('therapiesGrid');
+
+        if (therapies.length === 0) {
+            grid.innerHTML = '<p class="loading">No therapies match your filters.</p>';
+            return;
+        }
+
+        grid.innerHTML = therapies.map(t => {
+            const excerpt = t.description.length > 110
+                ? escapeHtml(t.description.slice(0, 110)) + '&hellip;'
+                : escapeHtml(t.description);
+            return `
+            <div class="therapy-card" onclick="viewTherapy('${t.id}')" role="button" tabindex="0"
+                 onkeydown="if(event.key==='Enter'||event.key===' ')viewTherapy('${t.id}')">
+                <span class="therapy-category-badge category-${t.category}">${t.category}</span>
+                <h3 class="therapy-card-title">${escapeHtml(t.name)}</h3>
+                <p class="therapy-card-excerpt">${excerpt}</p>
+                <div class="therapy-card-footer">
+                    <span class="therapy-duration">${t.duration} min</span>
+                    <span class="therapy-therapist">${escapeHtml(t.therapist)}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    window.viewTherapy = function(id) {
+        const therapy = allTherapies.find(t => t.id === id);
+        if (!therapy) return;
+
+        const categoryEl = document.getElementById('therapyModalCategory');
+        categoryEl.textContent = therapy.category;
+        categoryEl.className = `therapy-category-badge category-${therapy.category}`;
+
+        document.getElementById('therapyModalName').textContent = therapy.name;
+        document.getElementById('therapyModalDuration').textContent = `${therapy.duration} min`;
+        document.getElementById('therapyModalTherapist').textContent = therapy.therapist;
+        document.getElementById('therapyModalDescription').textContent = therapy.description;
+
+        document.getElementById('therapyModal').style.display = 'flex';
+    };
+
+    document.getElementById('closeTherapyModal').addEventListener('click', () => {
+        document.getElementById('therapyModal').style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        const therapyModal = document.getElementById('therapyModal');
+        if (event.target === therapyModal) therapyModal.style.display = 'none';
+    });
+
+    function debounceFilter() {
+        clearTimeout(filterDebounceTimer);
+        filterDebounceTimer = setTimeout(applyTherapyFilters, 200);
+    }
+
+    document.getElementById('therapySearch').addEventListener('input', debounceFilter);
+    document.getElementById('therapistFilter').addEventListener('input', debounceFilter);
+    document.getElementById('categoryFilter').addEventListener('change', applyTherapyFilters);
+
+    // ============================================================
+    // SHARED UTILITIES
+    // ============================================================
 
     function escapeHtml(text) {
         const div = document.createElement('div');

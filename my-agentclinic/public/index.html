@@ -12,10 +12,8 @@
             <h1 class="logo">AgentClinic</h1>
             <nav class="nav">
                 <ul class="nav-list">
-                    <li><a href="#" class="nav-link">Dashboard</a></li>
-                    <li><a href="#" class="nav-link">Ailments</a></li>
-                    <li><a href="#" class="nav-link">Therapies</a></li>
-                    <li><a href="#" class="nav-link">Profile</a></li>
+                    <li><a href="#" class="nav-link active" data-nav="agents">Dashboard</a></li>
+                    <li><a href="#" class="nav-link" data-nav="therapies">Therapies</a></li>
                 </ul>
             </nav>
         </div>
@@ -29,7 +27,8 @@
             </div>
         </section>
 
-        <section class="agents-section">
+        <!-- Agent Dashboard Section -->
+        <section class="agents-section" id="agentsSection">
             <div class="container">
                 <h2 class="section-title">Agent Dashboard</h2>
 
@@ -39,6 +38,42 @@
 
                 <div class="agents-grid" id="agentsGrid">
                     <p class="loading">Loading agents...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Therapy Catalog Section -->
+        <section class="therapies-section" id="therapiesSection" style="display:none;">
+            <div class="container">
+                <h2 class="section-title">Therapy Catalog</h2>
+
+                <div class="therapy-filters">
+                    <input
+                        type="text"
+                        id="therapySearch"
+                        class="filter-input"
+                        placeholder="Search by therapy name..."
+                        aria-label="Search therapies by name"
+                    >
+                    <input
+                        type="text"
+                        id="therapistFilter"
+                        class="filter-input"
+                        placeholder="Filter by therapist..."
+                        aria-label="Filter by therapist name"
+                    >
+                    <select id="categoryFilter" class="filter-select" aria-label="Filter by category">
+                        <option value="">All categories</option>
+                        <option value="cognitive">Cognitive</option>
+                        <option value="physical">Physical</option>
+                        <option value="relaxation">Relaxation</option>
+                        <option value="social">Social</option>
+                        <option value="creative">Creative</option>
+                    </select>
+                </div>
+
+                <div class="therapies-grid" id="therapiesGrid">
+                    <p class="loading">Loading therapies...</p>
                 </div>
             </div>
         </section>
@@ -133,6 +168,26 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal for Therapy Detail View -->
+    <div id="therapyModal" class="modal" style="display:none;">
+        <div class="modal-content therapy-detail-content">
+            <span class="close" id="closeTherapyModal">&times;</span>
+            <span class="therapy-category-badge" id="therapyModalCategory"></span>
+            <h2 id="therapyModalName"></h2>
+            <div class="therapy-modal-meta">
+                <div class="therapy-modal-meta-item">
+                    <span class="therapy-modal-meta-label">Duration</span>
+                    <span id="therapyModalDuration"></span>
+                </div>
+                <div class="therapy-modal-meta-item">
+                    <span class="therapy-modal-meta-label">Therapist</span>
+                    <span id="therapyModalTherapist"></span>
+                </div>
+            </div>
+            <p id="therapyModalDescription" class="therapy-modal-description"></p>
         </div>
     </div>
 
